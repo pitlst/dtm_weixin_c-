@@ -22,11 +22,9 @@ namespace dtm
         // 删除好友
         void remove_friend(const user_DTM & input_friend);
         // 查询是否为好友
-        bool fine_friend(const user_DTM & input_friend);
+        bool find_friend(const user_DTM & input_friend);
         // 变更所在地
-        void remove_friend(const location_DTM & new_location);
-        // 开通新的服务
-        void add_new_server(const std::string & server_name);
+        void change_location(const location_DTM & new_location);
         
         // 从文件的转换函数
         nlohmann::json to_json();
@@ -44,8 +42,6 @@ namespace dtm
         location_DTM m_location;
         // 好友列表，存放id
         std::vector<std::string> m_friend;
-        // 群组列表，存放id
-        std::vector<std::string> m_group;
         // 是否登录
         bool is_online = false;
     };
@@ -63,8 +59,6 @@ namespace dtm
         // 独立id
         std::string m_weixn_id;
     };
-
-    void 
 }
 
 #endif
