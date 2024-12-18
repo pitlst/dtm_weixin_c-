@@ -20,7 +20,7 @@ int main()
     LOGGER.debug("--------服务端开始运行--------");
     while (true)
     {
-        auto msg = MQ.read();
+        auto msg = MQ_S.read();
         if (!msg.empty())
         {
             LOGGER.info("接到消息");
@@ -41,7 +41,7 @@ int main()
                         temp_return["用户id"] = msg["用户id"];
                         temp_return["状态"] = true;
                         temp_return["消息"] = "成功登录";
-                        MQ.send(temp_return);
+                        MQ_S.send(temp_return);
                         break;
                     }
                 }
@@ -52,12 +52,13 @@ int main()
                     temp_return["用户id"] = msg["用户id"];
                     temp_return["状态"] = false;
                     temp_return["消息"] = "未找到用户";
-                    MQ.send(temp_return);
+                    MQ_S.send(temp_return);
                 }
             }
             else if (msg_type == "添加好友")
             {
-                /* code */
+                
+                
             }
             else if (msg_type == "删除好友")
             {
@@ -102,7 +103,7 @@ int main()
                 temp_return["用户id"] = msg["用户id"];
                 temp_return["状态"] = false;
                 temp_return["消息"] = "未知的消息类型";
-                MQ.send(temp_return);
+                MQ_S.send(temp_return);
             }
         }
         else

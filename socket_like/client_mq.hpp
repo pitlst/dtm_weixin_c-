@@ -1,18 +1,20 @@
-#ifndef DTM_MQ_INCLUDE
-#define DTM_MQ_INCLUDE
+#ifndef DTM_CLIENTMQ_INCLUDE
+#define DTM_CLIENTMQ_INCLUDE
 
 #include <string>
 #include <fstream>
+
+#include "base.hpp"
 
 #include "nlohmann/json.hpp"
 
 namespace dtm
 {
-    class server_message_queue_DTM
+    class client_message_queue_DTM: public message_queue_DTM
     {
     public:
         // 获取单实例对象
-        static server_message_queue_DTM &instance();
+        static client_message_queue_DTM &instance();
         // 读取消息
         nlohmann::json read();
         // 发送消息
@@ -20,22 +22,16 @@ namespace dtm
     
     private:
         // 禁止外部构造与析构
-        server_message_queue_DTM() = default;
-        ~server_message_queue_DTM() = default;
+        client_message_queue_DTM() = default;
+        ~client_message_queue_DTM() = default;
 
         // 读取或者发送的路径
-        const std::string send_file_path = std::string(PROJECT_PATH) + "source/message_queue_send.txt";
-        const std::string recv_file_path = std::string(PROJECT_PATH) + "source/message_queue_recv.txt";
-
-        // 上一次读取的行数
-        size_t last_line_number = 0;
-        // 文件流
-        std::ofstream output_file;
-        std::ifstream input_file;
+        const std::string send_file_path = std::string(PROJECT_PATH) + "source/message_queue_recv.txt";
+        const std::string recv_file_path = std::string(PROJECT_PATH) + "source/message_queue_send.txt";
     };
 }
 
-// log的全局引用简写
-#define MQ dtm::server_message_queue_DTM::instance()
+// 全局引用简写
+#define MQ_C dtm::client_message_queue_DTM::instance()
 
 #endif
