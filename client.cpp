@@ -1,4 +1,5 @@
 #include <iostream>
+#include <set>
 
 #include "nlohmann/json.hpp"
 
@@ -79,6 +80,12 @@ nlohmann::json crate_user()
     {
         temp_return["用户结构体"]["所在地"]["地区"] = "其他";
     }
+
+    auto t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&t), "%Y-%m-%d");
+    temp_return["用户结构体"]["创建时间"] = ss.str();
+    temp_return["用户结构体"]["好友列表"] = std::set<std::string>();
     return temp_return;
 }
 

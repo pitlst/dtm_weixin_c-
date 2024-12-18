@@ -1,3 +1,4 @@
+#include <iostream>
 #include <algorithm>
 #include "user.hpp"
 
@@ -46,12 +47,18 @@ nlohmann::json dtm::user_DTM::to_json()
 
 void dtm::user_DTM::from_json(const nlohmann::json & input_)
 {
-    m_id = input_["id"];
-    m_name = input_["名称"];
-    m_birthdays = input_["生日"];
-    m_create_time = input_["创建时间"];
+    std::cout << "1" << std::endl;
+    m_id = input_["id"].get<std::string>();
+    std::cout << "1" << std::endl;
+    m_name = input_["名称"].get<std::string>();
+    std::cout << "1" << std::endl;
+    m_birthdays = input_["生日"].get<std::string>();
+    std::cout << "1" << std::endl;
+    m_create_time = input_["创建时间"].get<std::string>();
+    std::cout << "1" << std::endl;
     m_location.from_json(input_["所在地"]);
     m_friend.clear();
+    std::cout << "1" << std::endl;
     m_friend = input_["好友列表"].get<std::set<std::string>>();
 }
 

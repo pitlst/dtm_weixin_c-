@@ -11,7 +11,7 @@ nlohmann::json dtm::location_DTM::to_json()
 
 void dtm::location_DTM::from_json(const nlohmann::json & input_)
 {
-    country = input_["国家"];
-    provinces = input_["省份"];
-    areas = input_["地区"];
+    country = input_["国家"].get<std::string>();
+    provinces = input_["省份"].get<std::string>();
+    areas = input_["地区"].get<std::string>();
 }
