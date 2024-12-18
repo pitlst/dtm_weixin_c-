@@ -39,7 +39,9 @@ include_directories(
     ${PROJECT_SOURCE_DIR}
     3rd_party
     user
-    socket
+    logger
+    socket_like
+    utils
 )
 
 # TBB加速库
@@ -58,15 +60,6 @@ find_package(TBB REQUIRED)
 set(fmt_DIR "${PROJECT_SOURCE_DIR}/3rd_party/fmt/lib/cmake/fmt")
 find_package(fmt REQUIRED)
 
-# # boost
-# if(POLICY CMP0167)
-#   cmake_policy(SET CMP0167 NEW)
-# endif()
-# set(BOOST_DIR "${PROJECT_SOURCE_DIR}/3rd_party/boost/lib/cmake/Boost-1.87.0")
-# find_package(Boost REQUIRED)
-
-# include_directories(${Boost_INCLUDE_DIRS})
-
 #--------------------------------------------------------------------------------------#
 #   项目编译设置
 #--------------------------------------------------------------------------------------#
@@ -76,8 +69,8 @@ add_compile_definitions(PROJECT_PATH=\"${PROJECT_SOURCE_DIR}/\")
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
 
 # 主函数
-add_executable(${PROJECT_NAME}  
-    main.cpp
+add_executable(${PROJECT_NAME}_server  
+    server.cpp
     user/user.cpp
     user/user.hpp
     user/location.cpp
@@ -86,8 +79,15 @@ add_executable(${PROJECT_NAME}
     user/group.hpp
     logger/logger.cpp
     logger/logger.hpp
+    socket_like/message_queue.cpp
+    socket_like/message_queue.hpp
 )
-target_link_libraries(${PROJECT_NAME} TBB::tbb fmt::fmt)
+target_link_libraries(${PROJECT_NAME}_server TBB::tbb fmt::fmt)
+
+add_executable(${PROJECT_NAME}_client
+    client.cpp
+)
+target_link_libraries(${PROJECT_NAME}_client TBB::tbb fmt::fmt)
 
 
 foreach(FILE_I ${TBB_DLLS})

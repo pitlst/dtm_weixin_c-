@@ -37,6 +37,11 @@ namespace dtm
         std::vector<std::string> m_control;
         // 所属的临时讨论群id
         std::vector<std::string> m_subgroup;
+
+
+        
+
+
     };
 
     // 微信群成员

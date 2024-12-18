@@ -14,11 +14,11 @@ namespace dtm{
         // 获取单实例对象
         static logger_DTM &instance();
         // 不同等级日志
-        void debug(const std::string & name, const std::string & msg);
-        void info(const std::string & name, const std::string & msg);
-        void warn(const std::string & name, const std::string & msg);
-        void error(const std::string & name, const std::string & msg);
-        void emit(const std::string & level, const std::string & name, const std::string & msg);
+        void debug(const std::string & msg);
+        void info(const std::string & msg);
+        void warn(const std::string & msg);
+        void error(const std::string & msg);
+        void emit(const std::string & level, const std::string & msg);
 
     private:
         // 禁止外部构造与析构
@@ -28,6 +28,6 @@ namespace dtm{
 }
 
 // log的全局引用简写
-#define LOGGER dbs::logger::instance()
+#define LOGGER dtm::logger_DTM::instance()
 
 #endif

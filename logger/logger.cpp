@@ -14,27 +14,27 @@ dtm::logger_DTM &dtm::logger_DTM::instance()
 }
 
 // 不同等级日志
-void dtm::logger_DTM::debug(const std::string &name, const std::string &msg)
+void dtm::logger_DTM::debug(const std::string &msg)
 {
-    return this->emit("DEBUG", name, msg);
+    return this->emit("DEBUG", msg);
 }
 
-void dtm::logger_DTM::info(const std::string &name, const std::string &msg)
+void dtm::logger_DTM::info(const std::string &msg)
 {
-    return this->emit("INFO", name, msg);
+    return this->emit("INFO", msg);
 }
 
-void dtm::logger_DTM::warn(const std::string &name, const std::string &msg)
+void dtm::logger_DTM::warn(const std::string &msg)
 {
-    return this->emit("WARNNING", name, msg);
+    return this->emit("WARNNING", msg);
 }
 
-void dtm::logger_DTM::error(const std::string &name, const std::string &msg)
+void dtm::logger_DTM::error(const std::string &msg)
 {
-    return this->emit("ERROR", name, msg);
+    return this->emit("ERROR", msg);
 }
 
-void dtm::logger_DTM::emit(const std::string &level, const std::string &name, const std::string &msg)
+void dtm::logger_DTM::emit(const std::string &level, const std::string &msg)
 {
     auto now = std::chrono::system_clock::now();
     // 命令行输出

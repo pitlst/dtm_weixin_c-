@@ -58,6 +58,10 @@ namespace dtm
         const std::string server_name = "weixin";
         // 独立id
         std::string m_weixn_id;
+
+        // 从文件的转换函数
+        nlohmann::json to_json();
+        void from_json(const nlohmann::json & input_);
     };
 }
 
