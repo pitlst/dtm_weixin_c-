@@ -81,6 +81,8 @@ add_executable(${PROJECT_NAME}_server
     logger/logger.hpp
     socket_like/message_queue.cpp
     socket_like/message_queue.hpp
+    utils/general.cpp
+    utils/general.hpp
 )
 target_link_libraries(${PROJECT_NAME}_server TBB::tbb fmt::fmt)
 

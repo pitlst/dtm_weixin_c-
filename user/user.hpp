@@ -3,7 +3,7 @@
 
 #include <string>
 #include <chrono>
-#include <vector>
+#include <set>
 #include <map>
 
 #include "nlohmann/json.hpp"
@@ -41,7 +41,7 @@ namespace dtm
         // 所在地
         location_DTM m_location;
         // 好友列表，存放id
-        std::vector<std::string> m_friend;
+        std::set<std::string> m_friend;
         // 是否登录
         bool is_online = false;
     };

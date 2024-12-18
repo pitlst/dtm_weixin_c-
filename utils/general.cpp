@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include "general.hpp"
 
 std::string dtm::make_id()
@@ -20,4 +22,34 @@ std::string dtm::make_id()
         ss << dis(gen);
     }
     return ss.str();
+}
+
+std::vector<dtm::user_DTM> dtm::make_user(const std::string & server_name, const std::string & config_path)
+{
+    std::ifstream input_file(config_path);
+    std::string file_str((std::istreambuf_iterator<char>(input_file)),  std::istreambuf_iterator<char>()); 
+    nlohmann::json user_config = nlohmann::json::parse(file_str);
+    std::vector<dtm::user_DTM> all_user;
+    for (const auto& ch : user_config[server_name])
+    {
+        dtm::user_DTM temp;
+        temp.from_json(ch);
+        all_user.emplace_back(temp);
+    }
+    return all_user;
+}
+
+std::vector<dtm::group_DTM> dtm::make_group(const std::string & server_name, const std::string & config_path)
+{
+    std::ifstream input_file(config_path);
+    std::string file_str((std::istreambuf_iterator<char>(input_file)),  std::istreambuf_iterator<char>()); 
+    nlohmann::json user_config = nlohmann::json::parse(file_str);
+    std::vector<dtm::group_DTM> all_group;
+    for (const auto& ch : user_config[server_name])
+    {
+        dtm::group_DTM temp;
+        temp.from_json(ch);
+        all_group.emplace_back(temp);
+    }
+    return all_group;
 }

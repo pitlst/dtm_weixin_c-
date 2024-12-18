@@ -4,6 +4,8 @@
 #include <string>
 #include <fstream>
 
+#include "nlohmann/json.hpp"
+
 namespace dtm
 {
     class message_queue_DTM
@@ -12,9 +14,9 @@ namespace dtm
         // 获取单实例对象
         static message_queue_DTM &instance();
         // 读取消息
-        std::string read();
+        nlohmann::json read();
         // 发送消息
-        void send(const std::string & msg);
+        void send(const nlohmann::json & msg);
     
     private:
         // 禁止外部构造与析构
@@ -29,7 +31,6 @@ namespace dtm
         size_t last_line_number = 0;
         // 文件流
         std::ofstream output_file;
-        // 文件流
         std::ifstream input_file;
     };
 }

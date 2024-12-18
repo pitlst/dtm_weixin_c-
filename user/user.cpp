@@ -8,7 +8,7 @@ void dtm::user_DTM::sign_in()
 
 void dtm::user_DTM::add_friend(const user_DTM & input_friend)
 {
-    m_friend.emplace_back(input_friend.m_id);
+    m_friend.emplace(input_friend.m_id);
 }
 
 void dtm::user_DTM::remove_friend(const user_DTM & input_friend)
@@ -52,7 +52,7 @@ void dtm::user_DTM::from_json(const nlohmann::json & input_)
     m_create_time = input_["创建时间"];
     m_location.from_json(input_["所在地"]);
     m_friend.clear();
-    m_friend = input_["好友列表"].get<std::vector<std::string>>();
+    m_friend = input_["好友列表"].get<std::set<std::string>>();
 }
 
 nlohmann::json dtm::weixin_user_DTM::to_json()

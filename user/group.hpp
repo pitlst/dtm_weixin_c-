@@ -2,7 +2,7 @@
 #define DTM_GROUP_INCLUDE
 
 #include <string>
-#include <vector>
+#include <set>
 
 #include "nlohmann/json.hpp"
 
@@ -17,13 +17,16 @@ namespace dtm
         void add(const user_DTM & input_);
         // 删除群成员
         void remove(const user_DTM & input_);
+        // 从文件的转换函数
+        nlohmann::json to_json();
+        void from_json(const nlohmann::json & input_);
 
         // 群id
         std::string m_id;
         // 群名称
         std::string m_name;
         // 群成员
-        std::vector<std::string> m_members;
+        std::set<std::string> m_members;
         // 群主id
         std::string m_master_id;
     };
@@ -34,13 +37,13 @@ namespace dtm
         // 所属服务名称
         const std::string server_name = "qq";
         // 群管理员id
-        std::vector<std::string> m_control;
+        std::set<std::string> m_control;
         // 所属的临时讨论群id
-        std::vector<std::string> m_subgroup;
+        std::set<std::string> m_subgroup;
 
-
-        
-
+        // 从文件的转换函数
+        nlohmann::json to_json();
+        void from_json(const nlohmann::json & input_);
 
     };
 

@@ -7,7 +7,7 @@ dtm::message_queue_DTM &dtm::message_queue_DTM::instance()
     return m_self;
 }
 
-std::string dtm::message_queue_DTM::read()
+nlohmann::json dtm::message_queue_DTM::read()
 {
     input_file.open(send_file_path);
     std::string line;
@@ -17,15 +17,15 @@ std::string dtm::message_queue_DTM::read()
         if(line_number > last_line_number)
         {
             last_line_number = line_number;
-            return line;
+            return nlohmann::json::parse(line);
         }
     }
-    return "";
+    return nlohmann::json();
 }
 
-void dtm::message_queue_DTM::send(const std::string & msg)
+void dtm::message_queue_DTM::send(const nlohmann::json & msg)
 {
     output_file.open(send_file_path);
-    output_file << msg << std::endl;
+    output_file << msg.dump() << std::endl;
     output_file.close();
 }
