@@ -8,11 +8,11 @@
 
 namespace dtm
 {
-    class message_queue_DTM
+    class server_message_queue_DTM
     {
     public:
         // 获取单实例对象
-        static message_queue_DTM &instance();
+        static server_message_queue_DTM &instance();
         // 读取消息
         nlohmann::json read();
         // 发送消息
@@ -20,8 +20,8 @@ namespace dtm
     
     private:
         // 禁止外部构造与析构
-        message_queue_DTM() = default;
-        ~message_queue_DTM() = default;
+        server_message_queue_DTM() = default;
+        ~server_message_queue_DTM() = default;
 
         // 读取或者发送的路径
         const std::string send_file_path = std::string(PROJECT_PATH) + "source/message_queue_send.txt";
@@ -36,6 +36,6 @@ namespace dtm
 }
 
 // log的全局引用简写
-#define MQ dtm::message_queue_DTM::instance()
+#define MQ dtm::server_message_queue_DTM::instance()
 
 #endif
