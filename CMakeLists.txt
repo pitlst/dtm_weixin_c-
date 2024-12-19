@@ -70,7 +70,7 @@ add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
 
 # 主函数
 add_executable(${PROJECT_NAME}_server  
-    server.cpp
+    main_server.cpp
     user/user.cpp
     user/user.hpp
     user/location.cpp
@@ -89,7 +89,7 @@ add_executable(${PROJECT_NAME}_server
 target_link_libraries(${PROJECT_NAME}_server TBB::tbb fmt::fmt)
 
 add_executable(${PROJECT_NAME}_client
-    client.cpp
+    main_client.cpp
     socket_like/base.cpp
     socket_like/base.hpp
     socket_like/client_mq.cpp
