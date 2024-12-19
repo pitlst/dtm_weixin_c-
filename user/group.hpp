@@ -21,17 +21,6 @@ namespace dtm
         std::set<std::string> m_members;
         // 群主id
         std::string m_master_id;
-
-        // 从文件的转换函数
-        nlohmann::json to_json();
-        void from_json(const nlohmann::json & input_);
-    };
-
-    // qq群成员
-    struct qq_group_DTM: public group_DTM
-    {
-        // 所属服务名称
-        const std::string server_name = "qq";
         // 群管理员id
         std::set<std::string> m_control;
         // 所属的临时讨论群id
@@ -40,15 +29,8 @@ namespace dtm
         // 从文件的转换函数
         nlohmann::json to_json();
         void from_json(const nlohmann::json & input_);
-
     };
 
-    // 微信群成员
-    struct weixin_group_DTM: public group_DTM
-    {
-        // 所属服务名称
-        const std::string server_name = "weixin";
-    };
 }
 
 #endif

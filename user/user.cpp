@@ -22,15 +22,13 @@ void dtm::user_DTM::from_json(const nlohmann::json & input_)
     m_location.from_json(input_["所在地"]);
 }
 
-nlohmann::json dtm::weixin_user_DTM::to_json()
+nlohmann::json dtm::user_association_DTM::to_json()
 {
-    nlohmann::json temp = dtm::user_DTM::to_json();
-    temp["微信id"] = m_weixn_id;
+    nlohmann::json temp = m_value;
     return temp;
 }
 
-void dtm::weixin_user_DTM::from_json(const nlohmann::json & input_)
+void dtm::user_association_DTM::from_json(const nlohmann::json & input_)
 {
-    dtm::user_DTM::from_json(input_);
-    m_weixn_id = input_["微信id"];
+    m_value = input_.get<std::set<std::string>>();
 }

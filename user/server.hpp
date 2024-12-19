@@ -18,38 +18,40 @@ namespace dtm
         server_manager_DTM(const std::string & server_name);
         ~server_manager_DTM();
 
-        // 根据id获取用户
+        // 获取用户
+        std::vector<dtm::user_DTM> get_user();
         std::optional<dtm::user_DTM> get_user(const std::string & user_id);
-        // 根据id获取群组
+        // 获取群组
+        std::vector<dtm::group_DTM> get_group();
         std::optional<dtm::group_DTM> get_group(const std::string & group_id);
 
         // 所有的事件实现定义
         // 添加好友
-        bool add_friend(const dtm::user_DTM & from_user, const dtm::user_DTM & to_user);
+        std::pair<bool, std::string> add_friend(const std::string & from_user_id, const std::string & to_user_id);
         // 删除好友
-        bool delete_friend(const dtm::user_DTM & from_user, const dtm::user_DTM & to_user);
+        std::pair<bool, std::string> delete_friend(const std::string & from_user_id, const std::string & to_user_id);
         // 查找好友
-        std::vector<dtm::user_DTM> find_friend(const dtm::user_DTM & _user);
+        std::vector<dtm::user_DTM> find_friend(const std::string & _user_id);
         // 创建用户
-        bool create_user(const dtm::user_DTM & _user);
+        std::pair<bool, std::string> create_user(const dtm::user_DTM & _user);
         // 登录
-        bool sign_in(const dtm::user_DTM & _user);
+        std::pair<bool, std::string> sign_in(const std::string & _user_id);
         // 登出
-        bool sign_out(const dtm::user_DTM & _user);
+        std::pair<bool, std::string> sign_out(const std::string & _user_id);
         // 创建群
-        bool create_group(const dtm::group_DTM & _group);
+        std::pair<bool, std::string> create_group(const dtm::group_DTM & _group);
         // 加入群
-        bool join_group(const dtm::user_DTM & _user, const dtm::group_DTM & _group);
+        std::pair<bool, std::string> join_group(const std::string & _user_id, const std::string & _group_id);
         // 退出群
-        bool quit_group(const dtm::user_DTM & _user, const dtm::group_DTM & _group);
+        std::pair<bool, std::string> quit_group(const std::string & _user_id, const std::string & _group_id);
         // 查询群成员
-        std::vector<dtm::user_DTM> find_group_member(const dtm::user_DTM & _user, const dtm::group_DTM & _group);
+        std::vector<dtm::user_DTM> find_group_member(const std::string & _user_id, const std::string & _group_id);
         // 邀请群成员
-        bool invite_group_member(const dtm::user_DTM & from_user, const dtm::user_DTM & to_user, const dtm::group_DTM & _group);
+        std::pair<bool, std::string> invite_group_member(const std::string & from_user_id, const std::string & to_user_id, const std::string & _group_id);
         // 踢出群成员
-        bool kickout_group_member(const dtm::user_DTM & from_user, const dtm::user_DTM & to_user, const dtm::group_DTM & _group);
+        std::pair<bool, std::string> kickout_group_member(const std::string & from_user_id, const std::string & to_user_id, const std::string & _group_id);
         // 设置群管理
-        bool set_group_manager(const dtm::user_DTM & from_user, const dtm::user_DTM & to_user, const dtm::group_DTM & _group);
+        std::pair<bool, std::string> set_group_manager(const std::string & from_user_id, const std::string & to_user_id, const std::string & _group_id);
 
     private:
         void make_user();
@@ -57,8 +59,8 @@ namespace dtm
         void wirte_user();
         void write_group();
         std::string make_id() const;
-        bool check_user_is_exist(const dtm::user_DTM & from_user);
-        bool check_user_is_exist(const dtm::user_DTM & from_user, const dtm::user_DTM & to_user);
+        bool check_user_is_exist(const std::string &from_user_id);
+        bool check_user_is_exist(const std::string & from_user_id, const std::string & to_user_id);
     
         const std::string user_path = std::string(PROJECT_PATH) + "source/user.json";
         const std::string group_path = std::string(PROJECT_PATH) + "source/group.json";
@@ -70,9 +72,20 @@ namespace dtm
         std::set<std::array<std::string, 2>> m_friend;
         // 对应服务所有的群组
         std::vector<dtm::group_DTM> m_group;
-        // 正在登陆中的用户
+        // 正在登陆中的用户的id
         std::vector<std::string> m_running_user;
 
+    };
+
+    class server_association_manager_DTM
+    {
+    public:
+        static server_association_manager_DTM &instance();
+    private:
+        std::vector<dtm::user_association_DTM> m_value;
+
+        server_association_manager_DTM();
+        ~server_association_manager_DTM();
     };
 }
 

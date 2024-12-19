@@ -31,23 +31,16 @@ namespace dtm
         void from_json(const nlohmann::json & input_);
     };
 
-    struct qq_user_DTM: public user_DTM
+    struct user_association_DTM
     {
-        // 所属服务名称
-        const std::string server_name = "qq";
-    };
-
-    struct weixin_user_DTM: public user_DTM
-    {
-        // 所属服务名称
-        const std::string server_name = "weixin";
-        // 独立id
-        std::string m_weixn_id;
+        std::set<std::string> m_value;
 
         // 从文件的转换函数
         nlohmann::json to_json();
         void from_json(const nlohmann::json & input_);
     };
+    
+    
 }
 
 #endif
