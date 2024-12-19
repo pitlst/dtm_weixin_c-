@@ -39,8 +39,6 @@ namespace dtm
         nlohmann::json to_json();
         void from_json(const nlohmann::json & input_);
     };
-    
-    
 }
 
 #endif

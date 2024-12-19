@@ -42,19 +42,8 @@ include_directories(
     logger
     socket_like
     utils
+    cli_interface
 )
-
-# TBB加速库
-set(TBB_DIR "${PROJECT_SOURCE_DIR}/3rd_party/onetbb/lib/cmake/tbb")
-set(TBB_DLLS
-    ${TBB_DIR}/../../../redist/intel64/vc14/tbb12.dll
-    ${TBB_DIR}/../../../redist/intel64/vc14/tbbbind_2_0.dll
-    ${TBB_DIR}/../../../redist/intel64/vc14/tbbbind_2_5.dll
-    ${TBB_DIR}/../../../redist/intel64/vc14/tbbbind.dll
-    ${TBB_DIR}/../../../redist/intel64/vc14/tbbmalloc_proxy.dll
-    ${TBB_DIR}/../../../redist/intel64/vc14/tbbmalloc.dll
-)
-find_package(TBB REQUIRED)
 
 # fmt打印时格式化
 set(fmt_DIR "${PROJECT_SOURCE_DIR}/3rd_party/fmt/lib/cmake/fmt")
@@ -68,7 +57,7 @@ add_compile_definitions(PROJECT_PATH=\"${PROJECT_SOURCE_DIR}/\")
 # 解决msvc的C4996警告
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
 
-# 主函数
+# 服务端程序
 add_executable(${PROJECT_NAME}_server  
     main_server.cpp
     user/user.cpp
@@ -86,8 +75,9 @@ add_executable(${PROJECT_NAME}_server
     socket_like/server_mq.cpp
     socket_like/server_mq.hpp
 )
-target_link_libraries(${PROJECT_NAME}_server TBB::tbb fmt::fmt)
+target_link_libraries(${PROJECT_NAME}_server fmt::fmt)
 
+# 客户端程序
 add_executable(${PROJECT_NAME}_client
     main_client.cpp
     socket_like/base.cpp
@@ -96,11 +86,14 @@ add_executable(${PROJECT_NAME}_client
     socket_like/client_mq.hpp
     logger/logger.cpp
     logger/logger.hpp
+    cli_interface/cli_location.cpp
+    cli_interface/cli_location.hpp
+    user/user.cpp
+    user/user.hpp
+    user/location.cpp
+    user/location.hpp
+    user/group.cpp
+    user/group.hpp
 )
-target_link_libraries(${PROJECT_NAME}_client TBB::tbb fmt::fmt)
-
-
-foreach(FILE_I ${TBB_DLLS})
-    file(COPY ${FILE_I} DESTINATION "${PROJECT_SOURCE_DIR}/build/Release" FOLLOW_SYMLINK_CHAIN)
-endforeach(FILE_I)
+target_link_libraries(${PROJECT_NAME}_client fmt::fmt)
 

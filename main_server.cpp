@@ -38,11 +38,12 @@ int main()
                     auto result = SERVER.value[msg_server].find_friend(msg["操作人id"]);
                     nlohmann::json temp_return;
                     temp_return["用户id"] = msg["操作人id"];
-                    temp_return["状态"] = true;
-                    temp_return["消息"] = nlohmann::json::array();
-                    for (auto ch : result)
+                    temp_return["状态"] = std::get<0>(result);
+                    temp_return["消息"] = std::get<1>(result);
+                    temp_return["数据"] = nlohmann::json::array();
+                    for (auto ch : std::get<2>(result))
                     {
-                        temp_return["消息"].emplace_back(ch.to_json());
+                        temp_return["数据"].emplace_back(ch.to_json());
                     }
                     MQ_S.send(temp_return);
                 }
@@ -80,11 +81,12 @@ int main()
                     auto result = SERVER.value[msg_server].find_group_member(msg["操作人id"], msg["群组id"]);
                     nlohmann::json temp_return;
                     temp_return["用户id"] = msg["操作人id"];
-                    temp_return["状态"] = true;
-                    temp_return["消息"] = nlohmann::json::array();
-                    for (auto ch : result)
+                    temp_return["状态"] = std::get<0>(result);
+                    temp_return["消息"] = std::get<1>(result);
+                    temp_return["数据"] = nlohmann::json::array();
+                    for (auto ch : std::get<2>(result))
                     {
-                        temp_return["消息"].emplace_back(ch.to_json());
+                        temp_return["数据"].emplace_back(ch.to_json());
                     }
                     MQ_S.send(temp_return);
                 }

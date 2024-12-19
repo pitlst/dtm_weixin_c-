@@ -77,6 +77,15 @@ void server_manager_DTM::update_group(const dtm::group_DTM & group_)
     }
 }
 
+std::pair<bool, std::string> server_manager_DTM::find_user_is_exist(const std::string & _user_id)
+{
+    if (check_user_is_exist(_user_id))
+    {
+        return std::make_pair(true, "用户存在");
+    }
+    return std::make_pair(false, "有用户不存在");
+}
+
 std::pair<bool, std::string> server_manager_DTM::add_friend(const std::string & from_user_id, const std::string & to_user_id)
 {
     if (!check_user_is_exist(from_user_id, to_user_id))
@@ -114,12 +123,12 @@ std::pair<bool, std::string> server_manager_DTM::delete_friend(const std::string
     return std::make_pair(false, "二者不存在好友关系");
 }
 
-std::vector<dtm::user_DTM> server_manager_DTM::find_friend(const std::string & _user_id)
+std::tuple<bool, std::string, std::vector<dtm::user_DTM>> server_manager_DTM::find_friend(const std::string & _user_id)
 {
     std::vector<dtm::user_DTM> temp_user;
     if (!check_user_is_exist(_user_id))
     {
-        return temp_user;
+        return std::make_tuple(false, "用户不存在", temp_user);
     }
     for (const auto &ch : m_friend)
     {
@@ -132,7 +141,7 @@ std::vector<dtm::user_DTM> server_manager_DTM::find_friend(const std::string & _
             temp_user.emplace_back(ch[0]);
         }
     }
-    return temp_user;
+    return std::make_tuple(true, "操作成功", temp_user);
 }
 
 std::pair<bool, std::string> server_manager_DTM::create_user(const dtm::user_DTM &_user)
@@ -150,6 +159,13 @@ std::pair<bool, std::string> server_manager_DTM::create_group(const dtm::group_D
     if (!check_user_is_exist(_group.m_master_id))
     {
         return std::make_pair(false, "创建群组的用户不存在");
+    }
+    for (const auto & ch : m_group)
+    {
+        if (ch.m_id == _group.m_id)
+        {
+            return std::make_pair(false, "群组已存在");
+        }
     }
     m_group.emplace_back(_group);
     return std::make_pair(true, "创建群组成功");
@@ -190,38 +206,23 @@ std::pair<bool, std::string> server_manager_DTM::quit_group(const std::string & 
     return std::make_pair(true, "退出成功");
 }
 
-std::vector<dtm::user_DTM> server_manager_DTM::find_group_member(const std::string & _user_id, const std::string & _group_id)
+std::tuple<bool, std::string, std::vector<dtm::user_DTM>> server_manager_DTM::find_group_member(const std::string & _user_id, const std::string & _group_id)
 {
     std::vector<dtm::user_DTM> temp;
     if (!check_user_is_exist(_user_id))
     {
-        return temp;
+        return std::make_tuple(false, "用户不存在", temp);
     }
-    auto it = std::find(m_group.begin(), m_group.end(), _group_id);
-    if (it == m_group.end())
+    auto it = get_group(_group_id);
+    if (!it.has_value())
     {
-        return temp;
-    }
-    if (m_server_name == "qq")
-    {
-        auto it__ = std::find(it->m_control.begin(), it->m_control.end(), _user_id);
-        if (it->m_master_id != _user_id || it__ != it->m_control.end())
-        {
-            return temp;
-        }
-    }
-    else
-    {
-        if (it->m_master_id != _user_id)
-        {
-            return temp;
-        }
+        return std::make_tuple(false, "群组不存在", temp);
     }
     for (const auto & ch : it->m_members)
     {
         temp.emplace_back(get_user(ch).value());
     }
-    return temp;
+    return std::make_tuple(true, "操作成功", temp);
 }
 
 std::pair<bool, std::string> server_manager_DTM::invite_group_member(const std::string & from_user_id, const std::string & to_user_id, const std::string & _group_id)
@@ -235,22 +236,9 @@ std::pair<bool, std::string> server_manager_DTM::invite_group_member(const std::
     {
         return std::make_pair(false, "群组不存在");
     }
-    if (m_server_name == "qq")
-    {
-        auto it__ = std::find(it.value().m_control.begin(), it.value().m_control.end(), from_user_id);
-        if (it.value().m_master_id != from_user_id || it__ != it.value().m_control.end())
-        {
-            return std::make_pair(false, "不是特权账户操作");
-        }
-    }
-    else
-    {
-        if (it.value().m_master_id != from_user_id)
-        {
-            return std::make_pair(false, "不是群主操作");
-        }
-    }
-    it.value().m_members.emplace(to_user_id);
+    auto it_ = it.value();
+    it_.m_members.emplace(to_user_id);
+    update_group(it_);
     return std::make_pair(true, "设置成功");
 }
 
@@ -265,27 +253,29 @@ std::pair<bool, std::string> server_manager_DTM::kickout_group_member(const std:
     {
         return std::make_pair(false, "群组不存在");
     }
+    auto it_value = it.value();
     if (m_server_name == "qq")
     {
-        auto it__ = std::find(it.value().m_control.begin(), it.value().m_control.end(), from_user_id);
-        if (it.value().m_master_id != from_user_id || it__ != it.value().m_control.end())
+        auto it__ = std::find(it_value.m_control.begin(), it_value.m_control.end(), from_user_id);
+        if (it_value.m_master_id != from_user_id || it__ != it_value.m_control.end())
         {
             return std::make_pair(false, "不是特权账户操作");
         }
     }
     else
     {
-        if (it.value().m_master_id != from_user_id)
+        if (it_value.m_master_id != from_user_id)
         {
             return std::make_pair(false, "不是群主操作");
         }
     }
-    auto it_ = std::find(it.value().m_members.begin(), it.value().m_members.end(), to_user_id);
-    if (it_ == it.value().m_members.end())
+    auto it_ = std::find(it_value.m_members.begin(), it_value.m_members.end(), to_user_id);
+    if (it_ == it_value.m_members.end())
     {
-        return std::make_pair(false, "不是群成员");
+        return std::make_pair(false, "准备踢出的用户不是群成员");
     }
-    it.value().m_members.erase(it_);
+    it_value.m_members.erase(it_);
+    update_group(it_value);
     return std::make_pair(true, "设置成功");
 }
 
@@ -304,11 +294,13 @@ std::pair<bool, std::string> server_manager_DTM::set_group_manager(const std::st
     {
         return std::make_pair(false, "群组不存在");
     }
-    if (it.value().m_master_id != from_user_id)
+    auto it_value = it.value();
+    if (it_value.m_master_id != from_user_id)
     {
         return std::make_pair(false, "不是群主操作");
     }
-    it.value().m_control.emplace(to_user_id);
+    it_value.m_control.emplace(to_user_id);
+    update_group(it_value);
     return std::make_pair(true, "设置成功");
 }
 

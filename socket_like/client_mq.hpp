@@ -23,7 +23,7 @@ namespace dtm
     private:
         // 禁止外部构造与析构
         client_message_queue_DTM() = default;
-        ~client_message_queue_DTM() = default;
+        ~client_message_queue_DTM();
 
         // 读取或者发送的路径
         const std::string send_file_path = std::string(PROJECT_PATH) + "source/message_queue_recv.txt";

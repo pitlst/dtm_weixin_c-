@@ -95,7 +95,7 @@ int main()
     while (true)
     {
         std::cout << "请输入以下快捷键发送消息" << std::endl;
-        std::cout << "0: 注册用户" << std::endl;
+        std::cout << "0: 创建用户" << std::endl;
         std::cout << "1: 登录" << std::endl;
         std::cout << "2: 添加好友" << std::endl;
         std::cout << "3: 删除好友" << std::endl;

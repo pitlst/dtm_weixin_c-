@@ -6,6 +6,7 @@
 #include <optional>
 #include <set>
 #include <array>
+#include <tuple>
 
 #include "user.hpp"
 #include "group.hpp"
@@ -28,12 +29,14 @@ namespace dtm
         void update_group(const dtm::group_DTM & group_);
 
         // 所有的事件实现定义
+        // 查询用户是否存在
+        std::pair<bool, std::string> find_user_is_exist(const std::string & _user_id);
         // 添加好友
         std::pair<bool, std::string> add_friend(const std::string & from_user_id, const std::string & to_user_id);
         // 删除好友
         std::pair<bool, std::string> delete_friend(const std::string & from_user_id, const std::string & to_user_id);
         // 查找好友
-        std::vector<dtm::user_DTM> find_friend(const std::string & _user_id);
+        std::tuple<bool, std::string, std::vector<dtm::user_DTM>> find_friend(const std::string & _user_id);
         // 创建用户
         std::pair<bool, std::string> create_user(const dtm::user_DTM & _user);
         // 创建群
@@ -43,7 +46,7 @@ namespace dtm
         // 退出群
         std::pair<bool, std::string> quit_group(const std::string & _user_id, const std::string & _group_id);
         // 查询群成员
-        std::vector<dtm::user_DTM> find_group_member(const std::string & _user_id, const std::string & _group_id);
+        std::tuple<bool, std::string, std::vector<dtm::user_DTM>> find_group_member(const std::string & _user_id, const std::string & _group_id);
         // 邀请群成员
         std::pair<bool, std::string> invite_group_member(const std::string & from_user_id, const std::string & to_user_id, const std::string & _group_id);
         // 踢出群成员
