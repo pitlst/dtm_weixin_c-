@@ -15,21 +15,6 @@ namespace dtm
     // 用户
     struct user_DTM
     {
-        // 登录
-        void sign_in();
-        // 添加好友
-        void add_friend(const user_DTM & input_friend);
-        // 删除好友
-        void remove_friend(const user_DTM & input_friend);
-        // 查询是否为好友
-        bool find_friend(const user_DTM & input_friend);
-        // 变更所在地
-        void change_location(const location_DTM & new_location);
-        
-        // 从文件的转换函数
-        nlohmann::json to_json();
-        void from_json(const nlohmann::json & input_);
-
         // id
         std::string m_id;
         // 名称
@@ -40,10 +25,10 @@ namespace dtm
         std::string m_create_time;
         // 所在地
         location_DTM m_location;
-        // 好友列表，存放id
-        std::set<std::string> m_friend;
-        // 是否登录
-        bool is_online = false;
+
+        // 从文件的转换函数
+        nlohmann::json to_json();
+        void from_json(const nlohmann::json & input_);
     };
 
     struct qq_user_DTM: public user_DTM

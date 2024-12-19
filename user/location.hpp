@@ -10,13 +10,13 @@ namespace dtm
     // 所在位置
     struct location_DTM
     {
-        // 从文件的转换函数
-        nlohmann::json to_json();
-        void from_json(const nlohmann::json & input_);
-
         std::string country;
         std::string provinces;
         std::string areas; 
+
+        // 从文件的转换函数
+        nlohmann::json to_json();
+        void from_json(const nlohmann::json & input_);
     };
 }
 

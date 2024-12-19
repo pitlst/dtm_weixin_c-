@@ -13,14 +13,6 @@ namespace dtm
     // 群
     struct group_DTM
     {
-        // 添加群成员
-        void add(const user_DTM & input_);
-        // 删除群成员
-        void remove(const user_DTM & input_);
-        // 从文件的转换函数
-        nlohmann::json to_json();
-        void from_json(const nlohmann::json & input_);
-
         // 群id
         std::string m_id;
         // 群名称
@@ -29,6 +21,10 @@ namespace dtm
         std::set<std::string> m_members;
         // 群主id
         std::string m_master_id;
+
+        // 从文件的转换函数
+        nlohmann::json to_json();
+        void from_json(const nlohmann::json & input_);
     };
 
     // qq群成员

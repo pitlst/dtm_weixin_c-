@@ -5,7 +5,6 @@
 #include "logger.hpp"
 #include "user.hpp"
 #include "group.hpp"
-#include "general.hpp"
 #include "server_mq.hpp"
 
 std::map<std::string, std::pair<std::vector<dtm::user_DTM>, std::vector<dtm::group_DTM>>> all_server;
@@ -59,6 +58,14 @@ int main()
                 }
                 else if (msg_type == "添加好友")
                 {
+                    for (auto &ch : all_server[msg_server].first)
+                    {
+                        if (ch.m_id == msg["用户id"].get<std::string>())
+                        {
+
+                            break;
+                        }
+                    }
                 }
                 else if (msg_type == "删除好友")
                 {

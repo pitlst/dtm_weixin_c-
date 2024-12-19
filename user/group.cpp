@@ -1,16 +1,5 @@
 #include "group.hpp"
 
-
-void dtm::group_DTM::add(const dtm::user_DTM & input_)
-{
-    m_members.emplace(input_.m_id);
-}
-
-void dtm::group_DTM::remove(const dtm::user_DTM & input_)
-{
-    m_members.erase(input_.m_id);
-}
-
 nlohmann::json dtm::group_DTM::to_json()
 {
     nlohmann::json temp;

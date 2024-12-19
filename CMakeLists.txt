@@ -77,14 +77,14 @@ add_executable(${PROJECT_NAME}_server
     user/location.hpp
     user/group.cpp
     user/group.hpp
+    user/server.cpp
+    user/server.hpp
     logger/logger.cpp
     logger/logger.hpp
     socket_like/base.cpp
     socket_like/base.hpp
     socket_like/server_mq.cpp
     socket_like/server_mq.hpp
-    utils/general.cpp
-    utils/general.hpp
 )
 target_link_libraries(${PROJECT_NAME}_server TBB::tbb fmt::fmt)
 
