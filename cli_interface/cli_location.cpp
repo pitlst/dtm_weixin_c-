@@ -117,6 +117,73 @@ void function_interface_DTM::get_input()
     }
 }
 
+void sign_in_interface_DTM::print_context()
+{
+    LOGGER.debug("正在准备登录");
+    std::cout << "请输入服务类型" << std::endl;
+    std::cin >> server_name;
+
+    std::cout << "请输入用户id" << std::endl;
+    std::cin >> user_id;
+
+    nlohmann::json temp_return;
+    temp_return["消息类型"] = "登录";
+    temp_return["服务类型"] = server_name;
+    temp_return["操作人id"] = user_id;
+
+    MQ_C.send(temp_return);
+}
+
+std::optional<std::tuple<std::string, std::string>> sign_in_interface_DTM::get_input()
+{
+    auto msg = MQ_C.read();
+    LOGGER.info("用户" + msg["用户id"].get<std::string>());
+    LOGGER.info("状态" + std::to_string(msg["状态"].get<bool>()));
+    LOGGER.info("消息" + msg["消息"].get<std::string>());
+    if (msg["状态"].get<bool>())
+    {
+        return std::make_tuple(server_name, user_id);
+    }
+    else
+    {
+        return std::nullopt;
+    }
+}
+
+void find_user_is_exist_interface_DTM::print_context()
+{
+    LOGGER.debug("正在准备查询用户是否存在");
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void create_user_interface_DTM::print_context()
 {
     LOGGER.debug("正在准备创建用户");
@@ -157,38 +224,7 @@ void create_user_interface_DTM::print_context()
     MQ_C.send(temp_return);
 }
 
-void sign_in_interface_DTM::print_context()
-{
-    LOGGER.debug("正在准备登录");
-    std::cout << "请输入服务类型" << std::endl;
-    std::cin >> server_name;
 
-    std::cout << "请输入用户id" << std::endl;
-    std::cin >> user_id;
-
-    nlohmann::json temp_return;
-    temp_return["消息类型"] = "登录";
-    temp_return["服务类型"] = server_name;
-    temp_return["操作人id"] = user_id;
-
-    MQ_C.send(temp_return);
-}
-
-std::optional<std::tuple<std::string, std::string>> sign_in_interface_DTM::get_input()
-{
-    auto msg = MQ_C.read();
-    LOGGER.info("用户" + msg["用户id"].get<std::string>());
-    LOGGER.info("状态" + std::to_string(msg["状态"].get<bool>()));
-    LOGGER.info("消息" + msg["消息"].get<std::string>());
-    if (msg["状态"].get<bool>())
-    {
-        return std::make_tuple(server_name, user_id);
-    }
-    else
-    {
-        return std::nullopt;
-    }
-}
 
 add_friend_interface_DTM::add_friend_interface_DTM(const std::string &user_id, const std::string &server_name) : user_id(user_id), server_name(server_name)
 {
@@ -196,5 +232,36 @@ add_friend_interface_DTM::add_friend_interface_DTM(const std::string &user_id, c
 
 void add_friend_interface_DTM::print_context()
 {
-    
+    LOGGER.debug("正在准备添加好友");
+    std::cout << "请输入需要添加的好友id" << std::endl;
+    std::string _user_id;
+    std::cin >> _user_id;
+
+    nlohmann::json temp_return;
+    temp_return["消息类型"] = "创建用户";
+    temp_return["服务类型"] = server_name;
+    temp_return["操作人id"] = user_id;
+    temp_return["被操作人id"] = _user_id;
+
+    MQ_C.send(temp_return);
+}
+
+delete_friend_interface_DTM::delete_friend_interface_DTM(const std::string &user_id, const std::string &server_name) : user_id(user_id), server_name(server_name)
+{
+}
+
+void delete_friend_interface_DTM::print_context()
+{
+    LOGGER.debug("正在准备删除好友");
+    std::cout << "请输入需要添加的好友id" << std::endl;
+    std::string _user_id;
+    std::cin >> _user_id;
+
+    nlohmann::json temp_return;
+    temp_return["消息类型"] = "创建用户";
+    temp_return["服务类型"] = server_name;
+    temp_return["操作人id"] = user_id;
+    temp_return["被操作人id"] = _user_id;
+
+    MQ_C.send(temp_return);
 }

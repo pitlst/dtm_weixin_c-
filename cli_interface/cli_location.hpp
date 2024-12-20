@@ -32,13 +32,6 @@ namespace dtm
         std::string server_name;
     };
 
-    // 创建用户
-    class create_user_interface_DTM : public base_interface_DTM
-    {
-    public:
-        void print_context();
-    };
-
     // 登录
     class sign_in_interface_DTM : public base_interface_DTM
     {
@@ -49,6 +42,13 @@ namespace dtm
     private:
         std::string user_id;
         std::string server_name;
+    };
+
+    // 查询用户是否存在
+    class find_user_is_exist_interface_DTM : public base_interface_DTM
+    {
+    public:
+        void print_context();
     };
 
     // 添加好友
@@ -85,6 +85,13 @@ namespace dtm
     private:
         std::string user_id;
         std::string server_name;
+    };
+
+    // 创建用户
+    class create_user_interface_DTM : public base_interface_DTM
+    {
+    public:
+        void print_context();
     };
 
     // 创建群
@@ -128,6 +135,18 @@ namespace dtm
     {
     public:
         find_group_member_interface_DTM(const std::string &user_id, const std::string &server_name);
+        void print_context();
+
+    private:
+        std::string user_id;
+        std::string server_name;
+    };
+
+    // 邀请群成员
+    class invite_group_member_interface_DTM : public base_interface_DTM
+    {
+    public:
+        invite_group_member_interface_DTM(const std::string &user_id, const std::string &server_name);
         void print_context();
 
     private:

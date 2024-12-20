@@ -24,7 +24,42 @@ int main()
                 LOGGER.info("接到消息");
                 auto msg_server = msg["服务类型"].get<std::string>();
                 auto msg_type = msg["消息类型"].get<std::string>();
-                if (msg_type == "删除好友")
+                if (msg_type == "登录")
+                {
+                    auto result = SERVER.value[msg_server].get_user(msg["操作人id"]);
+                    nlohmann::json temp_return;
+                    temp_return["用户id"] = msg["用户id"];
+                    if (result.has_value())
+                    {
+                        temp_return["状态"] = true;
+                        temp_return["消息"] = "成功登录";
+                    }
+                    else
+                    {
+                        temp_return["状态"] = false;
+                        temp_return["消息"] = "用户不存在";
+                    }
+                    MQ_S.send(temp_return);
+                }
+                else if (msg_type == "查询用户是否存在")
+                {
+                    auto result = SERVER.value[msg_server].find_user_is_exist(msg["操作人id"]);
+                    nlohmann::json temp_return;
+                    temp_return["用户id"] = "";
+                    temp_return["状态"] = result.first;
+                    temp_return["消息"] = result.second;
+                    MQ_S.send(temp_return);
+                }
+                else if (msg_type == "添加好友")
+                {
+                    auto result = SERVER.value[msg_server].add_friend(msg["操作人id"], msg["被操作人id"]);
+                    nlohmann::json temp_return;
+                    temp_return["用户id"] = msg["操作人id"];
+                    temp_return["状态"] = result.first;
+                    temp_return["消息"] = result.second;
+                    MQ_S.send(temp_return);
+                }
+                else if (msg_type == "删除好友")
                 {
                     auto result = SERVER.value[msg_server].delete_friend(msg["操作人id"], msg["被操作人id"]);
                     nlohmann::json temp_return;
@@ -54,6 +89,17 @@ int main()
                     auto result = SERVER.value[msg_server].create_user(temp);
                     nlohmann::json temp_return;
                     temp_return["用户id"] = "";
+                    temp_return["状态"] = result.first;
+                    temp_return["消息"] = result.second;
+                    MQ_S.send(temp_return);
+                }
+                else if (msg_type == "创建群")
+                {
+                    dtm::group_DTM temp;
+                    temp.from_json(msg["群组数据"]);
+                    auto result = SERVER.value[msg_server].create_group(temp);
+                    nlohmann::json temp_return;
+                    temp_return["用户id"] = msg["操作人id"];
                     temp_return["状态"] = result.first;
                     temp_return["消息"] = result.second;
                     MQ_S.send(temp_return);
@@ -90,6 +136,15 @@ int main()
                     }
                     MQ_S.send(temp_return);
                 }
+                else if (msg_type == "邀请群成员")
+                {
+                    auto result = SERVER.value[msg_server].invite_group_member(msg["操作人id"], msg["被操作人id"], msg["群组id"]);
+                    nlohmann::json temp_return;
+                    temp_return["用户id"] = msg["操作人id"];
+                    temp_return["状态"] = result.first;
+                    temp_return["消息"] = result.second;
+                    MQ_S.send(temp_return);
+                }
                 else if (msg_type == "踢出群成员")
                 {
                     auto result = SERVER.value[msg_server].kickout_group_member(msg["操作人id"], msg["被操作人id"], msg["群组id"]);
@@ -99,17 +154,7 @@ int main()
                     temp_return["消息"] = result.second;
                     MQ_S.send(temp_return);
                 }
-                else if (msg_type == "创建群")
-                {
-                    dtm::group_DTM temp;
-                    temp.from_json(msg["群组数据"]);
-                    auto result = SERVER.value[msg_server].create_group(temp);
-                    nlohmann::json temp_return;
-                    temp_return["用户id"] = msg["操作人id"];
-                    temp_return["状态"] = result.first;
-                    temp_return["消息"] = result.second;
-                    MQ_S.send(temp_return);
-                }
+
                 else if (msg_type == "设置群管理")
                 {
                     auto result = SERVER.value[msg_server].set_group_manager(msg["操作人id"], msg["被操作人id"], msg["群组id"]);
@@ -117,23 +162,6 @@ int main()
                     temp_return["用户id"] = msg["操作人id"];
                     temp_return["状态"] = result.first;
                     temp_return["消息"] = result.second;
-                    MQ_S.send(temp_return);
-                }
-                else if (msg_type == "登录")
-                {
-                    auto result = SERVER.value[msg_server].get_user(msg["操作人id"]);
-                    nlohmann::json temp_return;
-                    temp_return["用户id"] = msg["用户id"];
-                    if (result.has_value())
-                    {
-                        temp_return["状态"] = true;
-                        temp_return["消息"] = "成功登录";
-                    }
-                    else
-                    {
-                        temp_return["状态"] = false;
-                        temp_return["消息"] = "用户不存在";
-                    }
                     MQ_S.send(temp_return);
                 }
                 else
