@@ -5,10 +5,27 @@ using namespace dtm;
 
 void base_interface_DTM::get_input()
 {
-    auto msg = MQ_C.read();
-    LOGGER.info("用户" + msg["用户id"].get<std::string>());
-    LOGGER.info("状态" + std::to_string(msg["状态"].get<bool>()));
-    LOGGER.info("消息" + msg["消息"].get<std::string>());
+    nlohmann::json msg;
+    while (true)
+    {
+        msg = MQ_C.read();
+        if (!msg.empty())
+        {
+            break;
+        }
+    }
+    LOGGER.info("用户:" + msg["用户id"].get<std::string>());
+    auto temp_label = msg["状态"].get<bool>();
+    if (temp_label)
+    {
+        LOGGER.info("状态:true");
+        LOGGER.info("消息:" + msg["消息"].get<std::string>());
+    }
+    else
+    {
+        
+    }
+
     for (const auto &pair : msg.items())
     {
         if (pair.key() == "数据")
@@ -43,12 +60,6 @@ void function_interface_DTM::get_input()
     std::cin >> temp_input;
     if (temp_input == 0)
     {
-        create_user_interface_DTM temp;
-        temp.print_context();
-        temp.get_input();
-    }
-    else if (temp_input == 1)
-    {
         sign_in_interface_DTM temp;
         temp.print_context();
         auto res = temp.get_input();
@@ -57,56 +68,69 @@ void function_interface_DTM::get_input()
             user_id = std::get<0>(res.value());
             server_name = std::get<1>(res.value());
         }
+
     }
-    else if (temp_input == 2)
+    else if (temp_input == 1)
     {
         add_friend_interface_DTM temp(user_id, server_name);
         temp.print_context();
         temp.get_input();
     }
-    else if (temp_input == 3)
+    else if (temp_input == 2)
     {
         delete_friend_interface_DTM temp(user_id, server_name);
         temp.print_context();
         temp.get_input();
     }
-    else if (temp_input == 4)
+    else if (temp_input == 3)
     {
         find_friend_interface_DTM temp(user_id, server_name);
         temp.print_context();
         temp.get_input();
     }
+    else if (temp_input == 4)
+    {
+        create_user_interface_DTM temp;
+        temp.print_context();
+        temp.get_input();
+    }
     else if (temp_input == 5)
-    {
-        join_group_interface_DTM temp(user_id, server_name);
-        temp.print_context();
-        temp.get_input();
-    }
-    else if (temp_input == 6)
-    {
-        quit_group_interface_DTM temp(user_id, server_name);
-        temp.print_context();
-        temp.get_input();
-    }
-    else if (temp_input == 7)
-    {
-        find_group_member_interface_DTM temp(user_id, server_name);
-        temp.print_context();
-        temp.get_input();
-    }
-    else if (temp_input == 8)
-    {
-        kickout_group_member_interface_DTM temp(user_id, server_name);
-        temp.print_context();
-        temp.get_input();
-    }
-    else if (temp_input == 9)
     {
         create_group_interface_DTM temp(user_id, server_name);
         temp.print_context();
         temp.get_input();
     }
+    else if (temp_input == 6)
+    {
+        join_group_interface_DTM temp(user_id, server_name);
+        temp.print_context();
+        temp.get_input();
+    }
+    else if (temp_input == 7)
+    {
+        quit_group_interface_DTM temp(user_id, server_name);
+        temp.print_context();
+        temp.get_input();
+    }
+    else if (temp_input == 8)
+    {
+        find_group_member_interface_DTM temp(user_id, server_name);
+        temp.print_context();
+        temp.get_input();
+    }
+    else if (temp_input == 9)
+    {
+        invite_group_member_interface_DTM temp(user_id, server_name);
+        temp.print_context();
+        temp.get_input();
+    }
     else if (temp_input == 10)
+    {
+        kickout_group_member_interface_DTM temp(user_id, server_name);
+        temp.print_context();
+        temp.get_input();
+    }
+    else if (temp_input == 11)
     {
         set_group_manager_interface_DTM temp(user_id, server_name);
         temp.print_context();
