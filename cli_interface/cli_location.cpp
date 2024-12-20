@@ -23,17 +23,18 @@ void base_interface_DTM::get_input()
 void function_interface_DTM::print_context()
 {
     std::cout << "请输入以下快捷键发送消息" << std::endl;
-    std::cout << "0: 创建用户" << std::endl;
-    std::cout << "1: 登录" << std::endl;
-    std::cout << "2: 添加好友" << std::endl;
-    std::cout << "3: 删除好友" << std::endl;
-    std::cout << "4: 查询好友" << std::endl;
-    std::cout << "5: 加入群" << std::endl;
-    std::cout << "6: 退出群" << std::endl;
-    std::cout << "7: 查询群成员" << std::endl;
-    std::cout << "8: 踢出群成员" << std::endl;
-    std::cout << "9: 创建群" << std::endl;
-    std::cout << "10: 设置群管理" << std::endl;
+    std::cout << "0: 登录" << std::endl;
+    std::cout << "1: 添加好友" << std::endl;
+    std::cout << "2: 删除好友" << std::endl;
+    std::cout << "3: 查询好友" << std::endl;
+    std::cout << "4: 创建用户" << std::endl;
+    std::cout << "5: 创建群" << std::endl;
+    std::cout << "6: 加入群" << std::endl;
+    std::cout << "7: 退出群" << std::endl;
+    std::cout << "8: 查询群成员" << std::endl;
+    std::cout << "9: 邀请群成员" << std::endl;
+    std::cout << "10: 踢出群成员" << std::endl;
+    std::cout << "11: 设置群管理" << std::endl;
 }
 
 void function_interface_DTM::get_input()
@@ -150,38 +151,62 @@ std::optional<std::tuple<std::string, std::string>> sign_in_interface_DTM::get_i
     }
 }
 
-void find_user_is_exist_interface_DTM::print_context()
+add_friend_interface_DTM::add_friend_interface_DTM(const std::string &user_id, const std::string &server_name) : user_id(user_id), server_name(server_name)
 {
-    LOGGER.debug("正在准备查询用户是否存在");
-    
 }
 
+void add_friend_interface_DTM::print_context()
+{
+    LOGGER.debug("正在准备添加好友");
+    std::cout << "请输入需要添加的好友id" << std::endl;
+    std::string _user_id;
+    std::cin >> _user_id;
 
+    nlohmann::json temp_return;
+    temp_return["消息类型"] = "添加好友";
+    temp_return["服务类型"] = server_name;
+    temp_return["操作人id"] = user_id;
+    temp_return["被操作人id"] = _user_id;
 
+    MQ_C.send(temp_return);
+}
 
+delete_friend_interface_DTM::delete_friend_interface_DTM(const std::string &user_id, const std::string &server_name) : user_id(user_id), server_name(server_name)
+{
+}
 
+void delete_friend_interface_DTM::print_context()
+{
+    LOGGER.debug("正在准备删除好友");
+    std::cout << "请输入需要删除的好友id" << std::endl;
+    std::string _user_id;
+    std::cin >> _user_id;
 
+    nlohmann::json temp_return;
+    temp_return["消息类型"] = "删除好友";
+    temp_return["服务类型"] = server_name;
+    temp_return["操作人id"] = user_id;
+    temp_return["被操作人id"] = _user_id;
 
+    MQ_C.send(temp_return);
+}
 
+find_friend_interface_DTM::find_friend_interface_DTM(const std::string &user_id, const std::string &server_name): user_id(user_id), server_name(server_name)
+{
 
+}
 
+void find_friend_interface_DTM::print_context()
+{
+    LOGGER.debug("正在准备查询好友");
 
+    nlohmann::json temp_return;
+    temp_return["消息类型"] = "查询好友";
+    temp_return["服务类型"] = server_name;
+    temp_return["操作人id"] = user_id;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    MQ_C.send(temp_return);
+}
 
 
 void create_user_interface_DTM::print_context()
@@ -224,44 +249,177 @@ void create_user_interface_DTM::print_context()
     MQ_C.send(temp_return);
 }
 
-
-
-add_friend_interface_DTM::add_friend_interface_DTM(const std::string &user_id, const std::string &server_name) : user_id(user_id), server_name(server_name)
+create_group_interface_DTM::create_group_interface_DTM(const std::string &user_id, const std::string &server_name): user_id(user_id), server_name(server_name)
 {
+
 }
 
-void add_friend_interface_DTM::print_context()
+
+void create_group_interface_DTM::print_context()
 {
-    LOGGER.debug("正在准备添加好友");
-    std::cout << "请输入需要添加的好友id" << std::endl;
-    std::string _user_id;
-    std::cin >> _user_id;
+    LOGGER.debug("正在准备创建群组");
+    dtm::group_DTM temp;
+
+    std::cout << "请输入群组id" << std::endl;
+    std::cin >> temp.m_id;
+
+    std::cout << "请输入群组名称" << std::endl;
+    std::cin >> temp.m_name;
+
+    temp.m_master_id = user_id;
+    temp.m_members.emplace(user_id);
 
     nlohmann::json temp_return;
-    temp_return["消息类型"] = "创建用户";
+    temp_return["消息类型"] = "创建群";
     temp_return["服务类型"] = server_name;
-    temp_return["操作人id"] = user_id;
-    temp_return["被操作人id"] = _user_id;
+    temp_return["群组数据"] = temp.to_json();
 
     MQ_C.send(temp_return);
 }
 
-delete_friend_interface_DTM::delete_friend_interface_DTM(const std::string &user_id, const std::string &server_name) : user_id(user_id), server_name(server_name)
+join_group_interface_DTM::join_group_interface_DTM(const std::string &user_id, const std::string &server_name): user_id(user_id), server_name(server_name)
 {
+
 }
 
-void delete_friend_interface_DTM::print_context()
+void join_group_interface_DTM::print_context()
 {
-    LOGGER.debug("正在准备删除好友");
-    std::cout << "请输入需要添加的好友id" << std::endl;
-    std::string _user_id;
-    std::cin >> _user_id;
+    LOGGER.debug("正在准备加入群组");
+
+    std::cout << "请输入群组id" << std::endl;
+    std::string group_id;
+    std::cin >> group_id;
 
     nlohmann::json temp_return;
-    temp_return["消息类型"] = "创建用户";
+    temp_return["消息类型"] = "加入群";
     temp_return["服务类型"] = server_name;
     temp_return["操作人id"] = user_id;
-    temp_return["被操作人id"] = _user_id;
+    temp_return["群组id"] = group_id;
+
+    MQ_C.send(temp_return);
+}
+
+quit_group_interface_DTM::quit_group_interface_DTM(const std::string &user_id, const std::string &server_name): user_id(user_id), server_name(server_name)
+{
+
+}
+
+void quit_group_interface_DTM::print_context()
+{
+    LOGGER.debug("正在准备退出群组");
+
+    std::cout << "请输入群组id" << std::endl;
+    std::string group_id;
+    std::cin >> group_id;
+
+    nlohmann::json temp_return;
+    temp_return["消息类型"] = "退出群";
+    temp_return["服务类型"] = server_name;
+    temp_return["操作人id"] = user_id;
+    temp_return["群组id"] = group_id;
+
+    MQ_C.send(temp_return);
+}
+
+find_group_member_interface_DTM::find_group_member_interface_DTM(const std::string &user_id, const std::string &server_name): user_id(user_id), server_name(server_name)
+{
+
+}
+
+void find_group_member_interface_DTM::print_context()
+{
+    LOGGER.debug("正在准备查询群成员");
+
+    std::cout << "请输入群组id" << std::endl;
+    std::string group_id;
+    std::cin >> group_id;
+
+    nlohmann::json temp_return;
+    temp_return["消息类型"] = "查询群成员";
+    temp_return["服务类型"] = server_name;
+    temp_return["操作人id"] = user_id;
+    temp_return["群组id"] = group_id;
+
+    MQ_C.send(temp_return);
+}
+
+invite_group_member_interface_DTM::invite_group_member_interface_DTM(const std::string &user_id, const std::string &server_name): user_id(user_id), server_name(server_name)
+{
+
+}
+
+void invite_group_member_interface_DTM::print_context()
+{
+    LOGGER.debug("正在准备邀请群成员");
+
+    std::cout << "请输入群组id" << std::endl;
+    std::string group_id;
+    std::cin >> group_id;
+
+    std::cout << "请输入被操作人id" << std::endl;
+    std::string be_user_id;
+    std::cin >> be_user_id;
+
+    nlohmann::json temp_return;
+    temp_return["消息类型"] = "邀请群成员";
+    temp_return["服务类型"] = server_name;
+    temp_return["操作人id"] = user_id;
+    temp_return["被操作人id"] = be_user_id;
+    temp_return["群组id"] = group_id;
+
+    MQ_C.send(temp_return);
+}
+
+kickout_group_member_interface_DTM::kickout_group_member_interface_DTM(const std::string &user_id, const std::string &server_name): user_id(user_id), server_name(server_name)
+{
+
+}
+
+void kickout_group_member_interface_DTM::print_context()
+{
+    LOGGER.debug("正在准备踢出群成员");
+
+    std::cout << "请输入群组id" << std::endl;
+    std::string group_id;
+    std::cin >> group_id;
+
+    std::cout << "请输入被操作人id" << std::endl;
+    std::string be_user_id;
+    std::cin >> be_user_id;
+
+    nlohmann::json temp_return;
+    temp_return["消息类型"] = "踢出群成员";
+    temp_return["服务类型"] = server_name;
+    temp_return["操作人id"] = user_id;
+    temp_return["被操作人id"] = be_user_id;
+    temp_return["群组id"] = group_id;
+
+    MQ_C.send(temp_return);
+}
+
+set_group_manager_interface_DTM::set_group_manager_interface_DTM(const std::string &user_id, const std::string &server_name): user_id(user_id), server_name(server_name)
+{
+
+}
+
+void set_group_manager_interface_DTM::print_context()
+{
+    LOGGER.debug("正在准备设置群管理");
+
+    std::cout << "请输入群组id" << std::endl;
+    std::string group_id;
+    std::cin >> group_id;
+
+    std::cout << "请输入被操作人id" << std::endl;
+    std::string be_user_id;
+    std::cin >> be_user_id;
+
+    nlohmann::json temp_return;
+    temp_return["消息类型"] = "设置群管理";
+    temp_return["服务类型"] = server_name;
+    temp_return["操作人id"] = user_id;
+    temp_return["被操作人id"] = be_user_id;
+    temp_return["群组id"] = group_id;
 
     MQ_C.send(temp_return);
 }

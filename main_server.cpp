@@ -41,15 +41,6 @@ int main()
                     }
                     MQ_S.send(temp_return);
                 }
-                else if (msg_type == "查询用户是否存在")
-                {
-                    auto result = SERVER.value[msg_server].find_user_is_exist(msg["操作人id"]);
-                    nlohmann::json temp_return;
-                    temp_return["用户id"] = "";
-                    temp_return["状态"] = result.first;
-                    temp_return["消息"] = result.second;
-                    MQ_S.send(temp_return);
-                }
                 else if (msg_type == "添加好友")
                 {
                     auto result = SERVER.value[msg_server].add_friend(msg["操作人id"], msg["被操作人id"]);

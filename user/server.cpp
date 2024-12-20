@@ -77,15 +77,6 @@ void server_manager_DTM::update_group(const dtm::group_DTM & group_)
     }
 }
 
-std::pair<bool, std::string> server_manager_DTM::find_user_is_exist(const std::string & _user_id)
-{
-    if (check_user_is_exist(_user_id))
-    {
-        return std::make_pair(true, "用户存在");
-    }
-    return std::make_pair(false, "有用户不存在");
-}
-
 std::pair<bool, std::string> server_manager_DTM::add_friend(const std::string & from_user_id, const std::string & to_user_id)
 {
     if (!check_user_is_exist(from_user_id, to_user_id))

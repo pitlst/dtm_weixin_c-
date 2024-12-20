@@ -29,8 +29,6 @@ namespace dtm
         void update_group(const dtm::group_DTM & group_);
 
         // 所有的事件实现定义
-        // 查询用户是否存在
-        std::pair<bool, std::string> find_user_is_exist(const std::string & _user_id);
         // 添加好友
         std::pair<bool, std::string> add_friend(const std::string & from_user_id, const std::string & to_user_id);
         // 删除好友

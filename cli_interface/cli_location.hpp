@@ -44,13 +44,6 @@ namespace dtm
         std::string server_name;
     };
 
-    // 查询用户是否存在
-    class find_user_is_exist_interface_DTM : public base_interface_DTM
-    {
-    public:
-        void print_context();
-    };
-
     // 添加好友
     class add_friend_interface_DTM : public base_interface_DTM
     {

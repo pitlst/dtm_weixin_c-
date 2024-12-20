@@ -17,7 +17,12 @@ nlohmann::json dtm::client_message_queue_DTM::read()
         ss << line << std::endl;
     }
     input_file.close();
-    auto msg = nlohmann::json::parse(ss.str());
+    auto json_str = ss.str();
+    nlohmann::json msg;
+    if (!json_str.empty())
+    {
+        msg = nlohmann::json::parse(ss.str());
+    }
     // 清空文件内容
     std::ofstream truncateFile_(recv_file_path, std::ios::trunc);
     truncateFile_.close();
