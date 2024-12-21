@@ -322,8 +322,9 @@ void server_manager_DTM::make_user()
 {
     std::ifstream input_file(source_path + "/" + m_server_name + "/user.json");
     std::string file_str((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
+    input_file.close();
     nlohmann::json user_config = nlohmann::json::parse(file_str);
-    for (const auto &ch : user_config[m_server_name])
+    for (const auto &ch : user_config)
     {
         dtm::user_DTM temp;
         temp.from_json(ch);
@@ -335,8 +336,9 @@ void server_manager_DTM::make_group()
 {
     std::ifstream input_file(source_path + "/" + m_server_name + "/group.json");
     std::string file_str((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
+    input_file.close();
     nlohmann::json user_config = nlohmann::json::parse(file_str);
-    for (const auto &ch : user_config[m_server_name])
+    for (const auto &ch : user_config)
     {
         dtm::group_DTM temp;
         temp.from_json(ch);
@@ -346,12 +348,28 @@ void server_manager_DTM::make_group()
 
 void server_manager_DTM::wirte_user()
 {
-    
+    nlohmann::json user_config;
+    for (auto & ch : m_user)
+    {
+        user_config.emplace_back(ch.to_json());
+    }
+    std::string file_str = user_config.dump(4);
+    std::ofstream output_file(source_path + "/" + m_server_name + "/user.json");
+    output_file << file_str;
+    output_file.close();
 }
 
 void server_manager_DTM::write_group()
 {
-
+    nlohmann::json user_config;
+    for (auto & ch : m_group)
+    {
+        user_config.emplace_back(ch.to_json());
+    }
+    std::string file_str = user_config.dump(4);
+    std::ofstream output_file(source_path + "/" + m_server_name + "/group.json");
+    output_file << file_str;
+    output_file.close();
 }
 
 bool server_manager_DTM::check_user_is_exist(const std::string &from_user_id)

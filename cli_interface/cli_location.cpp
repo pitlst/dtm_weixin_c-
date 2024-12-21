@@ -23,7 +23,8 @@ void base_interface_DTM::get_input()
     }
     else
     {
-        
+        LOGGER.warn("状态:false");
+        LOGGER.warn("消息:" + msg["消息"].get<std::string>());
     }
 
     for (const auto &pair : msg.items())
